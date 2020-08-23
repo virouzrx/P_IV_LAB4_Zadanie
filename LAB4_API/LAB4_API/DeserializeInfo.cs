@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace LAB4_API
     {
         public static async Task<string> _deserializeAdvancedInfo(string _conferenceName)
         {
-            List<Advanced> list = new List<Advanced>();
+            List<Advanced> lista = new List<Advanced>();
 
             var downloadedAdvancedData = await APIActions.DownloadToAdvanced();
             var deserializeAdvancedData = JsonSerializer.Deserialize<Advanced[]>(downloadedAdvancedData, new JsonSerializerOptions()
@@ -20,14 +21,16 @@ namespace LAB4_API
 
             foreach (var item in deserializeAdvancedData)
             {
-                list.Add(new Advanced
+                lista.Add(new Advanced
                 {
                     Team = item.Team,
                     Conference = item.Conference,
                     Mascot = item.Mascot,
                 });
             }
-            return await SearchThroughAPI.Search(_conferenceName, list);
+            return lista.Where(x => x.Conference == _conferenceName)
+                                     .Select(x => x.Team)
+                                     .FirstOrDefault();
         }
     }
 }
