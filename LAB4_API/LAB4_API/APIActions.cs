@@ -17,5 +17,11 @@ namespace LAB4_API
         {
             return API.Download("/stats/season/advanced?year=2010");
         }
+
+        //--------------------- taki pomysł przyszedł do głowy:
+        public static async Task<string> DownloadAdvancedByName(string TeamName)
+        {
+            return API.Download("/stats/season/advanced?year=2010&team=" + TeamName);
+        }
     }
 }

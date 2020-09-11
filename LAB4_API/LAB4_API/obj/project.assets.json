@@ -5682,11 +5682,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ASUS\\Documents\\GitHub\\P_IV_LAB4_zadanie\\LAB4_API\\LAB4_API\\LAB4_API.csproj",
+      "projectUniqueName": "C:\\Users\\ASUS\\Desktop\\lab4kurwachuj\\LAB4_API\\LAB4_API\\LAB4_API.csproj",
       "projectName": "LAB4_API",
-      "projectPath": "C:\\Users\\ASUS\\Documents\\GitHub\\P_IV_LAB4_zadanie\\LAB4_API\\LAB4_API\\LAB4_API.csproj",
+      "projectPath": "C:\\Users\\ASUS\\Desktop\\lab4kurwachuj\\LAB4_API\\LAB4_API\\LAB4_API.csproj",
       "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ASUS\\Documents\\GitHub\\P_IV_LAB4_zadanie\\LAB4_API\\LAB4_API\\obj\\",
+      "outputPath": "C:\\Users\\ASUS\\Desktop\\lab4kurwachuj\\LAB4_API\\LAB4_API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
