@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LAB4_API
 {
-    public class Website
+    class Website
     {
         public Website(string link)
         {
@@ -18,12 +18,13 @@ namespace LAB4_API
             var response = _linkToWeb.Execute(request);
             return response.Content;
         }
-        public Task<IRestResponse> DownloadAsync(string path)
+        //to bylo z zajęć i nie wiem czemu to jest w kodzie, nigdzie nie jest uzyte
+        /*public Task<IRestResponse> DownloadAsync(string path)
         {
             var request = new RestRequest(path, Method.GET);
             var response = _linkToWeb.ExecuteAsync(request);
             return response;
-        }
+        }*/
         public RestClient _linkToWeb { get; set; }
     }
 }
