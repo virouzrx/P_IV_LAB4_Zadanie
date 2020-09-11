@@ -25,7 +25,7 @@ namespace LAB4_API
         //dodaj info
         public static async Task<Teams> _addTeamToDB(Teams item)
         {
-            var ekipa = new Teams
+            var tmp = new Teams
             {
                 School = item.School,
                 Abbreviation = item.Abbreviation,
@@ -35,21 +35,21 @@ namespace LAB4_API
                 Alt_Color = item.Alt_Color,
                 Team = await _getAdvancedInfoFromAPI(item.Conference)
             };
-            return ekipa;
+            return tmp;
         }
         //pobierz advanced data
-        public static async Task<string> _getAdvancedInfoFromAPI(string _nazwaConfy)
+        public static async Task<string> _getAdvancedInfoFromAPI(string _conferenceName)
         {
-            List<Advanced> lista = new List<Advanced>();
-            var advanced = await _downloadAdvancedInfoFromAPI();
-            var deserializer_advanced = JsonSerializer.Deserialize<Advanced[]>(advanced, new JsonSerializerOptions()
+            List<Advanced> advancedDataList = new List<Advanced>();
+            var advancedData = await _downloadAdvancedInfoFromAPI();
+            var advancedDataDeserialized = JsonSerializer.Deserialize<Advanced[]>(advancedData, new JsonSerializerOptions()
             {
                 PropertyNameCaseInsensitive = true
             });
 
-            foreach (var item in deserializer_advanced)
+            foreach (var item in advancedDataDeserialized)
             {
-                lista.Add(new Advanced
+                advancedDataList.Add(new Advanced
                 {
                     Team = item.Team,
                     Conference = item.Conference,
@@ -59,7 +59,7 @@ namespace LAB4_API
                     endWeek = item.endWeek
                 });
             }
-            return await _lookForMatch(_nazwaConfy, lista);
+            return await _lookForMatch(_conferenceName, advancedDataList);
         }
         //znajdz wszystkie odpowiadajace tym druzynom conference i dodaj im parametry z advanceda
         public static async Task<string> _lookForMatch(string _Confa, List<Advanced> lista)
