@@ -12,11 +12,11 @@ namespace LAB4_API
         {
             _linkToWeb = new RestClient(link);
         }
-        public string Download(string path)
+        public async Task<string> DownloadAsync(string path)
         {
             var request = new RestRequest(path, Method.GET);
-            var response = _linkToWeb.Execute(request);
-            return response.Content;
+            var response = _linkToWeb.ExecuteAsync(request);
+            return response.Result.Content;
         }
         //to bylo z zajęć i nie wiem czemu to jest w kodzie, nigdzie nie jest uzyte
         /*public Task<IRestResponse> DownloadAsync(string path)

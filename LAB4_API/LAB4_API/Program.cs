@@ -16,14 +16,14 @@ namespace LAB4_API
         //teamsy oraz advancedy dla nich
         public static async Task<string> _downloadTeamsFromAPI()
         {
-            return API.Download("/teams/fbs");
+            return await API.DownloadAsync("/teams/fbs");
         }
         public static async Task<string> _downloadAdvancedInfoFromAPI()
         {
-            return API.Download("/stats/season/advanced?year=2010");
+            return await API.DownloadAsync("/stats/season/advanced?year=2010");//pobieranie asyncowe
         }
         //dodaj info
-        public static async Task<Teams> _addTeamToDB(Teams item)
+        public static async Task<Teams> _addTeamToDB(Teams item, Context db, Advanced[] advancedDataDeserialized)
         {
             var tmp = new Teams
             {
@@ -33,19 +33,16 @@ namespace LAB4_API
                 Divison = item.Divison,
                 Color = item.Color,
                 Alt_Color = item.Alt_Color,
-                Team = await _getAdvancedInfoFromAPI(item.Conference)
+                Team = await _getAdvancedInfoFromAPI(item.Conference, advancedDataDeserialized)
             };
+            db.Teams.Add(tmp);
             return tmp;
         }
         //pobierz advanced data
-        public static async Task<string> _getAdvancedInfoFromAPI(string _conferenceName)
+        public static async Task<string> _getAdvancedInfoFromAPI(string _conferenceName, Advanced[] advancedDataDeserialized)
         {
             List<Advanced> advancedDataList = new List<Advanced>();
-            var advancedData = await _downloadAdvancedInfoFromAPI();
-            var advancedDataDeserialized = JsonSerializer.Deserialize<Advanced[]>(advancedData, new JsonSerializerOptions()
-            {
-                PropertyNameCaseInsensitive = true
-            });
+
 
             foreach (var item in advancedDataDeserialized)
             {
@@ -71,10 +68,11 @@ namespace LAB4_API
         }
         public static async Task Main()
         {
-            //String hourMinute = DateTime.Now.ToString("HH:mm:ss");
+            Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
             Console.WriteLine("Odpaliłem program!\n");
             using var db = new Context();
             db.Database.EnsureCreated();
+            Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
             Console.WriteLine("Stworzylem baze!\n");
             var teams = await _downloadTeamsFromAPI();
 
@@ -82,13 +80,28 @@ namespace LAB4_API
             {
                 PropertyNameCaseInsensitive = true
             });
-            Console.WriteLine("Zdeserializowalem dane!\n");
+            Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
+            Console.WriteLine("Zdeserializowałem podstawowe dane\n");
+
+            //lista tasków
+            List<Task<Teams>> tasks = new List<Task<Teams>>();
+            var advancedData = await _downloadAdvancedInfoFromAPI();
+            var advancedDataDeserialized = JsonSerializer.Deserialize<Advanced[]>(advancedData, new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
+            Console.WriteLine("Zdeserializowałem advancedy\n");
+
             foreach (var item in deserializer)
             {
-                db.Teams.Add(await _addTeamToDB(item));
-                Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
-                Console.WriteLine("Dodalem element do bazy...\n");
+                tasks.Add(_addTeamToDB(item, db, advancedDataDeserialized));
+                //db.Teams.Add(await _addTeamToDB(item));
+
             };
+            await Task.WhenAll(tasks);
+
+            Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
             db.SaveChanges();
             Console.WriteLine("Zapisalem dane do bazy!");
         }
